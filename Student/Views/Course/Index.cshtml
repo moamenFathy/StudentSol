@@ -34,7 +34,7 @@
                 <tr>
                     <td>@course.CourseId</td>
                     <td>@course.CourseName</td>
-                    <td>@course.CoursePrice</td>
+                    <td>@course.CoursePrice.ToString("C").Split(".")[0]</td>
                     <td class="d-flex justify-content-center gap-5">
                         <a class="btn btn-primary" asp-action="Upsert" asp-route-Id="@course.CourseId">Update</a>
                         <a class="btn btn-danger" asp-action="Delete" asp-route-Id="@course.CourseId">Delete</a>

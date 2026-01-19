@@ -1,0 +1,77 @@
+﻿@model StudentSystem_Model.ViewModel.EnrollmentVm
+
+@{
+    ViewData["Title"] = "Course Enrollment";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="mb-4">Course Enrollment</h2>
+
+            <!-- Student Info -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Student Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Name:</strong> @Model.StudentName</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Email:</strong> @Model.Email</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enrollment Form -->
+            <form asp-action="Enrollment" method="post">
+                <input type="hidden" asp-for="StudentId" />
+
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Select Courses</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.Courses.Any())
+                        {
+                            <div class="row">
+                                @for (int i = 0; i < Model.Courses.Count(); i++)
+                                {
+                                    <div class="col-md-6 mb-3">
+                                        <input type="hidden" asp-for="Courses[i].CourseId" />
+                                        <input type="hidden" asp-for="Courses[i].CourseName" />
+
+                                        <div class="form-check p-3 border rounded">
+                                            <input asp-for="Courses[i].IsSelected"
+                                                   class="form-check-input"
+                                                   type="checkbox"
+                                                   id="course_@i" />
+                                            <label class="form-check-label" for="course_@i">
+                                                @Model.Courses[i].CourseName
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning">
+                                No courses available for enrollment.
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-success">Save Enrollment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

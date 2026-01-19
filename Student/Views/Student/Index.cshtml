@@ -37,6 +37,7 @@
                         <td>@student.Email</td>
                         <td class="d-flex justify-content-center gap-5">
                             <a class="btn btn-primary" asp-action="Upsert" asp-route-Id="@student.StudentId">Update</a>
+                            <a class="btn btn-secondary" asp-controller="StudentCourse" asp-action="Enrollment" asp-route-StudentId="@student.StudentId">Enroll Course</a>
                             <a class="btn btn-danger" asp-action="Delete" asp-route-Id="@student.StudentId">Delete</a>
                         </td>
                     </tr>
