@@ -5,9 +5,10 @@ namespace StudentSystem_DataAccess.Data
 {
   public class ApplicationDbContext : DbContext
   {
-    public DbSet<Student> Students { get; set; }
-    public DbSet<Course> Courses { get; set; }
-    public DbSet<StudentCourse> StudentCourses { get; set; }
+    public DbSet<Student> Students => Set<Student>();
+    public DbSet<Course> Courses => Set<Course>();
+    public DbSet<StudentCourse> StudentCourses => Set<StudentCourse>();
+    public DbSet<EndUser> Admins => Set<EndUser>();
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
@@ -22,6 +23,7 @@ namespace StudentSystem_DataAccess.Data
           new Student { StudentId = 2, FirstName = "Moamen", LastName = "Fathy", Email = "Fathy@example.com" },
           new Student { StudentId = 3, FirstName = "Mahmoud", LastName = "Mohamed", Email = "Mahmoud@example.com" }
         );
+
       modelBuilder.Entity<Course>().HasData(
         new Course { CourseId = 1, CourseName = "Math", CoursePrice = 1500 },
           new Course { CourseId = 2, CourseName = "Data Structure", CoursePrice = 1100 },
