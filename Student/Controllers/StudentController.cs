@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StudentSystem_DataAccess.Data;
 using StudentSystem_Model.Models;
+using StudentSystem_Model.ViewModel;
 
 namespace StudentSystem.Controllers
 {
@@ -10,10 +12,25 @@ namespace StudentSystem.Controllers
 
     public StudentController(ApplicationDbContext context) => _context = context;
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index(FilterStudentDto f)
     {
-      List<Student> students = _context.Students.ToList();
-      return View(students);
+      var q = _context.Students.AsQueryable();
+
+      if (!string.IsNullOrWhiteSpace(f.Search))
+      {
+        var searchTerm = f.Search.Trim();
+        q = q.Where(s =>
+        s.FirstName.Contains(searchTerm) ||
+        s.LastName.Contains(searchTerm) ||
+        (s.FirstName + " " + s.LastName).Contains(searchTerm) ||
+        (s.LastName + " " + s.FirstName).Contains(searchTerm) ||
+        s.Email.Contains(searchTerm)
+      );
+      }
+
+      var items = await q.AsNoTracking().ToListAsync();
+      ViewBag.SearchTerm = f.Search;
+      return View(items);
     }
 
     //GET
