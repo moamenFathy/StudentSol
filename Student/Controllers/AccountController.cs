@@ -26,7 +26,7 @@ namespace StudentSystem.Controllers
 
       var email = vm.Email.Trim().ToLower();
 
-      var emailExists = await _context.Students.AnyAsync(s => s.Email == email);
+      var emailExists = await _context.Admins.AnyAsync(s => s.Email == email);
 
       if (emailExists)
       {
@@ -52,5 +52,45 @@ namespace StudentSystem.Controllers
     }
 
     public IActionResult Login() => View();
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Login(LoginVm vm)
+    {
+      if (!ModelState.IsValid) return View(vm);
+
+      var email = vm.Email.Trim().ToLower();
+
+      var admin = _context.Admins.FirstOrDefault(s => s.Email == email);
+
+      if (admin == null)
+      {
+        ModelState.AddModelError(admin.Email, "Invalid email or password");
+        return View(vm);
+      }
+
+      var isValidPassword = PasswordHasher.Verify(
+          vm.Password,
+          admin.Password,
+          admin.PasswordSalt
+        );
+
+      if (!isValidPassword)
+      {
+        ModelState.AddModelError("", "Invalid email or password");
+        return View(vm);
+      }
+
+      HttpContext.Session.SetInt32("adminId", admin.EndUserId);
+      HttpContext.Session.SetString("adminName", admin.FullName);
+
+      return RedirectToAction(nameof(Index), "Home");
+    }
+
+    public IActionResult Logout()
+    {
+      HttpContext.Session.Clear();
+      return RedirectToAction(nameof(Index), "Home");
+    }
   }
 }

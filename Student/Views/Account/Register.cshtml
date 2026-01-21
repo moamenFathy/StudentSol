@@ -14,23 +14,23 @@
             <legend>Register</legend>
             <div class="form-group mb-3">
                 <label asp-for="@Model.FirstName" class="control-label">First Name</label>
-                <input asp-for="@Model.FirstName" class="form-control" />
+                <input asp-for="@Model.FirstName" class="form-control" placeholder="Enter Your First Name" />
                 <span asp-validation-for="@Model.FirstName" class="text-danger fw-bold"></span>
             </div>
             <div class="form-group mb-3">
                 <label asp-for="@Model.LastName" class="control-label">Last Name</label>
-                <input asp-for="@Model.LastName" class="form-control" />
+                <input asp-for="@Model.LastName" class="form-control" placeholder="Enter Your Last Name" />
                 <span asp-validation-for="@Model.LastName" class="text-danger fw-bold"></span>
             </div>
             <div class="form-group mb-3">
                 <label asp-for="@Model.Email" class="control-label">Email</label>
-                <input asp-for="@Model.Email" class="form-control" />
+                <input asp-for="@Model.Email" class="form-control" placeholder="Enter Your Email" />
                 <span asp-validation-for="@Model.Email" class="text-danger fw-bold"></span>
             </div>
             <div class="form-group mb-3">
                 <label asp-for="@Model.Password" class="control-label">Password</label>
                 <div class="input-group mb-3">
-                    <input asp-for="@Model.Password" type="password" class="form-control pass-input" placeholder="Recipient’s username" aria-label="Recipient’s username" aria-describedby="button-addon2">
+                    <input asp-for="@Model.Password" type="password" class="form-control pass-input" placeholder="Enter Your Password" aria-label="Recipient’s username" aria-describedby="button-addon2">
                     <button class="btn btn-outline-secondary show-pass" type="button">Show Password</button>
                 </div>
                 <span asp-validation-for="@Model.Password" class="text-danger fw-bold"></span>
@@ -38,7 +38,7 @@
             <div class="form-group mb-3">
                 <label asp-for="@Model.ConfirmPassword" class="control-label">Confirm Password</label>
                 <div class="input-group mb-3">
-                    <input asp-for="@Model.ConfirmPassword" type="password" class="form-control pass-input" placeholder="Recipient’s username" aria-label="Recipient’s username" aria-describedby="button-addon2">
+                    <input asp-for="@Model.ConfirmPassword" type="password" class="form-control pass-input" placeholder="Enter Your Confirm Password" aria-label="Recipient’s username" aria-describedby="button-addon2">
                     <button class="btn btn-outline-secondary show-pass" type="button">Show Password</button>
                 </div>
                 <span asp-validation-for="@Model.ConfirmPassword" class="text-danger fw-bold"></span>
@@ -50,17 +50,7 @@
     @section Scripts {
         <partial name="_ValidationScriptsPartial" />
     }
-    <script>
-        const password = document.querySelectorAll(".pass-input");
-        const togglePassword = document.querySelectorAll(".show-pass");
-
-        togglePassword.forEach((button, index) => {
-            button.addEventListener("click", () => {
-                const type = password[index].getAttribute("type") === "password" ? "text" : "password";
-                password[index].setAttribute("type", type);
-            });
-        });
-    </script>
+    <script src="~/js/site.js"></script>
 </body>
 </html>
 
