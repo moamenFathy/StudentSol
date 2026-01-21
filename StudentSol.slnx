@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="Student/StudentSystem.csproj" />
+  <Project Path="StudentSystem_Utilites/StudentSystem_Utilites.csproj" Id="2658b6ab-1324-4fbf-9af4-8a84f06add43" />
   <Project Path="Student_DataAccess/StudentSystem_DataAccess.csproj" Id="ba0d16a4-0a7e-4beb-8668-4ab3c8889ee4" />
   <Project Path="Student_Model/StudentSystem_Model.csproj" Id="efc1f9ca-8694-4ea0-8975-12151701749b" />
 </Solution>

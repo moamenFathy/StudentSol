@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StudentSystem_Utilites\StudentSystem_Utilites.csproj" />
     <ProjectReference Include="..\Student_DataAccess\StudentSystem_DataAccess.csproj" />
   </ItemGroup>
 
