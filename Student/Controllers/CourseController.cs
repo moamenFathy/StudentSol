@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StudentSystem_DataAccess.Data;
 using StudentSystem_Model.Models;
+using StudentSystem_Model.ViewModel;
 
 namespace StudentSystem.Controllers
 {
@@ -8,12 +10,31 @@ namespace StudentSystem.Controllers
   {
     private readonly ApplicationDbContext _context;
 
-    public CourseController(ApplicationDbContext context) => _context = context;
-
-    public IActionResult Index()
+    public CourseController(ApplicationDbContext context)
     {
-      List<Course> courses = _context.Courses.ToList();
-      return View(courses);
+      _context = context;
+    }
+
+    public async Task<IActionResult> Index(FilterCourseDto f)
+    {
+      var q = _context.Courses.AsQueryable();
+
+      var searchCourseName = f.CourseName?.Trim();
+
+      if (!string.IsNullOrEmpty(searchCourseName))
+      {
+        q = q.Where(x => x.CourseName.Contains(searchCourseName));
+      }
+
+      if (f.CoursePrice != null && f.CoursePrice > 0)
+      {
+        q = q.Where(x => x.CoursePrice == f.CoursePrice);
+      }
+
+      var list = await q.AsNoTracking().ToListAsync();
+      ViewBag.CourseName = f.CourseName;
+      ViewBag.CoursePrice = f.CoursePrice;
+      return View(list);
     }
 
     // GET

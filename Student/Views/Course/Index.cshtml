@@ -10,43 +10,121 @@
     <title></title>
 </head>
 <body>
-    <div class="d-flex justify-content-between align-items-center mb-0 p-3 rounded-top bg-body-secondary">
-        <h2>Courses List</h2>
-        <a class="btn btn-success" asp-action="Upsert">
-            Create New Course
-            <span class="badge text-bg-warning mx-1">@Model.Count()</span>
-        </a>
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Courses Management</h4>
+                <a class="btn btn-success" asp-action="Upsert">
+                    <i class="bi bi-plus-circle"></i> Create New Course
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="get" asp-action="Index" class="mb-3">
+                <div class="row g-2">
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" 
+                                   name="CourseName" 
+                                   class="form-control" 
+                                   placeholder="Search by course name..." 
+                                   value="@ViewBag.CourseName" 
+                                   aria-label="Search by course name" />
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="bi bi-currency-dollar"></i>
+                            </span>
+                            <input type="number" 
+                                   name="CoursePrice" 
+                                   class="form-control" 
+                                   placeholder="Search by price..." 
+                                   value="@ViewBag.CoursePrice" 
+                                   aria-label="Search by course price" />
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary flex-fill">Search</button>
+                            @if (ViewBag.CourseName != null || ViewBag.CoursePrice != null)
+                            {
+                                <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+            @if (ViewBag.CourseName != null || ViewBag.CoursePrice != null)
+            {
+                <div class="alert alert-info mb-0">
+                    <strong><i class="bi bi-funnel"></i> Search Results:</strong> 
+                    Found <span class="badge bg-primary">@Model.Count()</span> course(s)
+                    @if (ViewBag.CourseName != null)
+                    {
+                        <span> matching "<strong>@ViewBag.CourseName</strong>"</span>
+                    }
+                    @if (ViewBag.CoursePrice != null)
+                    {
+                        <span> with price "<strong>@ViewBag.CoursePrice</strong>"</span>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-muted">
+                    <small>Total courses: <strong>@Model.Count()</strong></small>
+                </div>
+            }
+        </div>
     </div>
+
     @if (Model.Count() > 0)
     {
-    <table class="table table-bordered table-striped text-center w-100">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Course Name</th>
-                <th>Credits</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var course in Model)
-            {
+        <table class="table table-bordered table-striped text-center w-100">
+            <thead>
                 <tr>
-                    <td>@course.CourseId</td>
-                    <td>@course.CourseName</td>
-                    <td>@course.CoursePrice.ToString("C").Split(".")[0]</td>
-                    <td class="d-flex justify-content-center gap-5">
-                        <a class="btn btn-primary" asp-action="Upsert" asp-route-Id="@course.CourseId">Update</a>
-                        <a class="btn btn-danger" asp-action="Delete" asp-route-Id="@course.CourseId">Delete</a>
-                    </td>
+                    <th>#</th>
+                    <th>Course Name</th>
+                    <th>Price</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var course in Model)
+                {
+                    <tr>
+                        <td>@course.CourseId</td>
+                        <td>@course.CourseName</td>
+                        <td>@course.CoursePrice.ToString("C").Split(".")[0]</td>
+                        <td class="d-flex justify-content-center gap-3">
+                            <a class="btn btn-sm btn-primary" asp-action="Upsert" asp-route-Id="@course.CourseId">
+                                <i class="bi bi-pencil"></i> Update
+                            </a>
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-Id="@course.CourseId">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     }
     else
     {
-        <p>There Is No Available Courses</p>
+        <div class="alert alert-warning text-center">
+            <i class="bi bi-exclamation-triangle"></i>
+            <strong>No Courses Available</strong>
+            @if (ViewBag.CourseName != null || ViewBag.CoursePrice != null)
+            {
+                <p class="mb-0 mt-2">Try adjusting your search criteria.</p>
+            }
+        </div>
     }
 </body>
 </html>

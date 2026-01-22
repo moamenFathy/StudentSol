@@ -85,7 +85,14 @@
     }
     else
     {
-        <h2>No Students Available</h2>
+        <div class="alert alert-warning text-center">
+            <i class="bi bi-exclamation-triangle"></i>
+            <strong>No Students Available</strong>
+            @if (ViewBag.SearchTerm != null)
+            {
+                <p class="mb-0 mt-2">Try adjusting your search criteria.</p>
+            }
+        </div>
     }
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
 </body>
