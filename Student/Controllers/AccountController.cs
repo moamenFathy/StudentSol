@@ -65,7 +65,7 @@ namespace StudentSystem.Controllers
 
       if (admin == null)
       {
-        ModelState.AddModelError(admin.Email, "Invalid email or password");
+        ModelState.AddModelError("", "Invalid email or password");
         return View(vm);
       }
 

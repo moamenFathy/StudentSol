@@ -1,10 +1,93 @@
 ﻿@using Microsoft.AspNetCore.Http
 @{
+    var adminId = Context.Session.GetInt32("adminId");
     var adminName = Context.Session.GetString("adminName");
-    ViewData["Title"] = $"Welcome {adminName}";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome @adminName</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mt-5 mb-5">
+    <h1 class="display-3 fw-bold mb-3 gradient-text">
+        <i class="bi bi-mortarboard-fill"></i> Student Management System
+    </h1>
+    
+    @if (adminId != null)
+    {
+        <h3 class="text-muted mb-4">Welcome back, <strong>@adminName</strong>!</h3>
+    }
+    else
+    {
+        <p class="lead text-muted mb-4">Manage students, courses, and enrollments efficiently</p>
+    }
 </div>
+
+@if (adminId != null)
+{
+    <div class="row g-4 mt-4">
+        <div class="col-md-4">
+            <div class="card shadow hover-lift">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4 gradient-text" style="font-size: 4rem;">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <h4 class="card-title fw-bold">Students</h4>
+                    <p class="card-text text-muted">Manage student records and information</p>
+                    <a asp-controller="Student" asp-action="Index" class="btn btn-primary btn-lg mt-3">
+                        <i class="bi bi-arrow-right-circle"></i> View Students
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow hover-lift">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4 gradient-text" style="font-size: 4rem;">
+                        <i class="bi bi-book-fill"></i>
+                    </div>
+                    <h4 class="card-title fw-bold">Courses</h4>
+                    <p class="card-text text-muted">Manage courses and curriculum</p>
+                    <a asp-controller="Course" asp-action="Index" class="btn btn-success btn-lg mt-3">
+                        <i class="bi bi-arrow-right-circle"></i> View Courses
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow hover-lift">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4 gradient-text" style="font-size: 4rem;">
+                        <i class="bi bi-journal-bookmark-fill"></i>
+                    </div>
+                    <h4 class="card-title fw-bold">Enrollments</h4>
+                    <p class="card-text text-muted">Manage student course enrollments</p>
+                    <a asp-controller="StudentCourse" asp-action="Index" class="btn btn-info btn-lg mt-3">
+                        <i class="bi bi-arrow-right-circle"></i> View Enrollments
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-body text-center p-5">
+                    <i class="bi bi-door-open gradient-text" style="font-size: 5rem;"></i>
+                    <h2 class="mt-4 mb-3">Get Started</h2>
+                    <p class="lead text-muted mb-4">Please login or register to access the system</p>
+                    <div class="d-flex gap-3 justify-content-center">
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </a>
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-success btn-lg">
+                            <i class="bi bi-person-plus"></i> Register
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

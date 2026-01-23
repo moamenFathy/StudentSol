@@ -1,45 +1,80 @@
 ﻿@model StudentSystem_Model.Models.Course
 @{
-    ViewData["Title"] = "Create Course";
+    ViewData["Title"] = Model.CourseId == 0 ? "Create Course" : "Edit Course";
 }
 
-<!DOCTYPE HTML>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg">
+            <div class="card-header card-header-gradient text-white py-4">
+                <h3 class="mb-0">
+                    @if (Model.CourseId == 0)
+                    {
+                        <i class="bi bi-book-half"></i> <text>Create New Course</text>
+                    }
+                    else
+                    {
+                        <i class="bi bi-pencil-square"></i> <text>Edit Course</text>
+                    }
+                </h3>
+            </div>
+            <div class="card-body p-4">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                }
 
-    @if (Model.CourseId != 0)
-    {
-        ViewData["Title"] = "Edit Course";
-    }
+                <form method="post" asp-action="Upsert">
+                    <input type="hidden" asp-for="CourseId" />
+                    
+                    <div class="mb-4">
+                        <label asp-for="CourseName" class="form-label fw-bold">
+                            <i class="bi bi-book"></i> Course Name
+                        </label>
+                        <input asp-for="CourseName" 
+                               class="form-control form-control-lg" 
+                               placeholder="Enter course name (e.g., Mathematics 101)" />
+                        <span asp-validation-for="CourseName" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label asp-for="CoursePrice" class="form-label fw-bold">
+                            <i class="bi bi-currency-dollar"></i> Course Price
+                        </label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text">$</span>
+                            <input asp-for="CoursePrice" 
+                                   type="number" 
+                                   step="0.01"
+                                   class="form-control" 
+                                   placeholder="0.00" />
+                        </div>
+                        <span asp-validation-for="CoursePrice" class="text-danger small"></span>
+                    </div>
 
-    <form method="post">
-        <input type="hidden" asp-for="@Model.CourseId" />
-        <div class="mt-3">
-            <label asp-for="@Model.CourseName" class="form-label">Course Name</label>
-            <input asp-for="@Model.CourseName" type="text" placeholder="Enter Your Course Name" class="form-control" />
-            <span asp-validation-for="@Model.CourseName" class="text-danger fw-bold"></span>
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                        @if (Model.CourseId != 0)
+                        {
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle"></i> Update Course
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-plus-circle"></i> Create Course
+                            </button>
+                        }
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="mt-3">
-            <label asp-for="@Model.CoursePrice" class="form-label">CoursePrice</label>
-            <input asp-for="@Model.CoursePrice" type="text" placeholder="Enter Your Course Price" class="form-control" />
-            <span asp-validation-for="@Model.CoursePrice" class="text-danger fw-bold"></span>
-        </div>
+    </div>
+</div>
 
-        <div class="d-flex justify-content-end w-100 mt-3 gap-3">
-            @if (Model.CourseId != 0)
-            {
-                <button type="submit" class="btn btn-success">Update</button>
-            }
-            else
-            {
-                <button type="submit" class="btn btn-success">Create</button>
-            }
-            <a asp-controller="Course" asp-action="Index" class="btn btn-primary">Back To List</a>
-        </div>
-    </form>
-</body>
-</html>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
