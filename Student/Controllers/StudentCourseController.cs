@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StudentSystem_DataAccess.Data;
 using StudentSystem_Model.Models;
@@ -14,11 +15,49 @@ namespace StudentSystem.Controllers
       _context = context;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index(FilterEnrollmentDto f)
     {
-      var studentCourses = _context.StudentCourses
+      var query = _context.StudentCourses
         .Include(sc => sc.Student)
         .Include(sc => sc.Course)
+        .AsQueryable();
+
+      if (!string.IsNullOrWhiteSpace(f.StudentName))
+      {
+        var searchTerm = f.StudentName.Trim();
+        query = query.Where(sc =>
+          sc.Student!.FirstName.Contains(searchTerm) ||
+          sc.Student.LastName.Contains(searchTerm) ||
+          (sc.Student.FirstName + " " + sc.Student.LastName).Contains(searchTerm) ||
+          (sc.Student.LastName + " " + sc.Student.FirstName).Contains(searchTerm)
+        );
+      }
+
+      if (!string.IsNullOrWhiteSpace(f.Email))
+      {
+        var emailTerm = f.Email.Trim();
+        query = query.Where(sc =>
+          sc.Student!.Email.Contains(emailTerm));
+      }
+
+      var filterdStudentIds = await query
+        .Select(sc => sc.StudentId)
+        .Distinct()
+        .ToListAsync();
+
+      if (f.CourseId.HasValue && f.CourseId.Value > 0)
+      {
+        filterdStudentIds = await query
+          .Where(sc => sc.CourseId == f.CourseId.Value)
+          .Select(sc => sc.StudentId)
+          .Distinct()
+          .ToListAsync();
+      }
+
+      var studentCourses = await _context.StudentCourses
+        .Include(sc => sc.Student)
+        .Include(sc => sc.Course)
+        .Where(sc => filterdStudentIds.Contains(sc.StudentId))
         .GroupBy(sc => sc.StudentId)
         .Select(g => new
         {
@@ -26,7 +65,20 @@ namespace StudentSystem.Controllers
           Courses = g.Select(sc => sc.Course).ToList(),
           EnrolledAt = g.First().EnrolledAt
         })
-        .ToList();
+        .AsNoTracking()
+        .ToListAsync();
+
+      ViewBag.Courses = new SelectList(
+          await _context.Courses.AsNoTracking().ToListAsync(),
+          "CourseId",
+          "CourseName",
+          f.CourseId
+          );
+
+      ViewBag.StudentName = f.StudentName;
+      ViewBag.Email = f.Email;
+      ViewBag.CourseId = f.CourseId;
+
       return View(studentCourses);
     }
 

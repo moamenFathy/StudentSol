@@ -3,13 +3,89 @@
 @{
     ViewData["Title"] = "Enrolled Courses";
 }
-<div class="d-flex justify-content-between align-items-center mb-0 p-3 rounded-top bg-body-secondary">
-    <h2>Enrollments List</h2>
-    <a class="btn btn-success" asp-controller="Student" asp-action="Index">
-        Enrollment A Course
-        <span class="badge text-bg-warning mx-1">@Model.Count()</span>
-    </a>
+
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Enrollments Management</h4>
+            <a class="btn btn-success" asp-controller="Student" asp-action="Index">
+                <i class="bi bi-plus-circle"></i> Enroll Students
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <form method="get" asp-action="Index" class="mb-3">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="bi bi-person"></i>
+                        </span>
+                        <input type="text" 
+                               name="StudentName" 
+                               class="form-control" 
+                               placeholder="Search by student name..." 
+                               value="@ViewBag.StudentName" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="bi bi-envelope"></i>
+                        </span>
+                        <input type="email" 
+                               name="Email" 
+                               class="form-control" 
+                               placeholder="Search by email..." 
+                               value="@ViewBag.Email" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="bi bi-book"></i>
+                        </span>
+                        <select name="CourseId" class="form-select">
+                            <option value="">-- All Courses --</option>
+                            @foreach (var item in (SelectList)ViewBag.Courses)
+                            {
+                                <option value="@item.Value" selected="@item.Selected">@item.Text</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-fill">Search</button>
+                        @if (!string.IsNullOrWhiteSpace(ViewBag.StudentName) || 
+                             !string.IsNullOrWhiteSpace(ViewBag.Email) || 
+                             ViewBag.CourseId != null)
+                        {
+                            <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+        @if (!string.IsNullOrWhiteSpace(ViewBag.StudentName) || 
+             !string.IsNullOrWhiteSpace(ViewBag.Email) || 
+             ViewBag.CourseId != null)
+        {
+            <div class="alert alert-info mb-0">
+                <strong><i class="bi bi-funnel"></i> Filter Applied:</strong> 
+                Found <span class="badge bg-primary">@Model.Count()</span> enrollment(s)
+            </div>
+        }
+        else
+        {
+            <div class="text-muted">
+                <small>Total enrollments: <strong>@Model.Count()</strong></small>
+            </div>
+        }
+    </div>
 </div>
+
 <table class="table table-bordered table-striped text-center">
     <thead>
         <tr>
@@ -17,7 +93,6 @@
             <th>Student Name</th>
             <th>Email</th>
             <th>Enrolled Courses</th>
-            <th>Enrolled At</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -32,15 +107,14 @@
                     <ul class="list-unstyled mb-0">
                         @foreach (var course in item.Courses)
                         {
-                            <li class="badge bg-secondary me-1 mb-1">@course.CourseName</li>
+                            <li class="badge bg-info text-dark me-1 mb-1">@course.CourseName</li>
                         }
                     </ul>
                 </td>
                 <td>
-                    @item.EnrolledAt
-                </td>
-                <td>
-                    <a class="btn btn-sm btn-primary" asp-action="Enrollment" asp-route-studentId="@item.Student.StudentId">Edit Courses</a>
+                    <a class="btn btn-sm btn-primary" asp-action="Enrollment" asp-route-studentId="@item.Student.StudentId">
+                        <i class="bi bi-pencil"></i> Edit Courses
+                    </a>
                 </td>
             </tr>
         }
